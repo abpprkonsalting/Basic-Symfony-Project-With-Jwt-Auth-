@@ -34,9 +34,15 @@ class Location
      */
     private $childrenLocations;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ProductAttributeValueInt::class, mappedBy="location")
+     */
+    private $productAttributeValueInts;
+
     public function __construct()
     {
         $this->childrenLocations = new ArrayCollection();
+        $this->productAttributeValueInts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -92,6 +98,36 @@ class Location
             // set the owning side to null (unless already changed)
             if ($childrenLocation->getParentLocation() === $this) {
                 $childrenLocation->setParentLocation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductAttributeValueInt>
+     */
+    public function getProductAttributeValueInts(): Collection
+    {
+        return $this->productAttributeValueInts;
+    }
+
+    public function addProductAttributeValueInt(ProductAttributeValueInt $productAttributeValueInt): self
+    {
+        if (!$this->productAttributeValueInts->contains($productAttributeValueInt)) {
+            $this->productAttributeValueInts[] = $productAttributeValueInt;
+            $productAttributeValueInt->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductAttributeValueInt(ProductAttributeValueInt $productAttributeValueInt): self
+    {
+        if ($this->productAttributeValueInts->removeElement($productAttributeValueInt)) {
+            // set the owning side to null (unless already changed)
+            if ($productAttributeValueInt->getLocation() === $this) {
+                $productAttributeValueInt->setLocation(null);
             }
         }
 

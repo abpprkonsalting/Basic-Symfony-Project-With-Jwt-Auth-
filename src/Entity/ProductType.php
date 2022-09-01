@@ -29,9 +29,15 @@ class ProductType
      */
     private $products;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Attribute::class, mappedBy="productType")
+     */
+    private $attributes;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
+        $this->attributes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,6 +81,36 @@ class ProductType
             // set the owning side to null (unless already changed)
             if ($product->getProducttype() === $this) {
                 $product->setProducttype(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Attribute>
+     */
+    public function getAttributes(): Collection
+    {
+        return $this->attributes;
+    }
+
+    public function addAttribute(Attribute $attribute): self
+    {
+        if (!$this->attributes->contains($attribute)) {
+            $this->attributes[] = $attribute;
+            $attribute->setProductType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttribute(Attribute $attribute): self
+    {
+        if ($this->attributes->removeElement($attribute)) {
+            // set the owning side to null (unless already changed)
+            if ($attribute->getProductType() === $this) {
+                $attribute->setProductType(null);
             }
         }
 

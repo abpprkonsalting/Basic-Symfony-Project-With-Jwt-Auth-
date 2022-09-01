@@ -2,17 +2,15 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\ProductRepository;
+use App\Repository\AttributeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ProductRepository::class)
+ * @ORM\Entity(repositoryClass=AttributeRepository::class)
  */
-#[ApiResource]
-class Product
+class Attribute
 {
     /**
      * @ORM\Id
@@ -27,13 +25,18 @@ class Product
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ProductType::class, inversedBy="products")
+     * @ORM\Column(type="string", length=255)
+     */
+    private $attributeType;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ProductType::class, inversedBy="attributes")
      * @ORM\JoinColumn(nullable=false)
      */
     private $productType;
 
     /**
-     * @ORM\OneToMany(targetEntity=ProductAttributeValueInt::class, mappedBy="entity", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=ProductAttributeValueInt::class, mappedBy="attribute", orphanRemoval=true)
      */
     private $productAttributeValueInts;
 
@@ -55,6 +58,18 @@ class Product
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getAttributeType(): ?string
+    {
+        return $this->attributeType;
+    }
+
+    public function setAttributeType(string $attributeType): self
+    {
+        $this->attributeType = $attributeType;
 
         return $this;
     }
@@ -83,7 +98,7 @@ class Product
     {
         if (!$this->productAttributeValueInts->contains($productAttributeValueInt)) {
             $this->productAttributeValueInts[] = $productAttributeValueInt;
-            $productAttributeValueInt->setEntity($this);
+            $productAttributeValueInt->setAttribute($this);
         }
 
         return $this;
@@ -93,8 +108,8 @@ class Product
     {
         if ($this->productAttributeValueInts->removeElement($productAttributeValueInt)) {
             // set the owning side to null (unless already changed)
-            if ($productAttributeValueInt->getEntity() === $this) {
-                $productAttributeValueInt->setEntity(null);
+            if ($productAttributeValueInt->getAttribute() === $this) {
+                $productAttributeValueInt->setAttribute(null);
             }
         }
 

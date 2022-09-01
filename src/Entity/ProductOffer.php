@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductOfferRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -44,6 +46,21 @@ class ProductOffer
      * @ORM\JoinColumn(nullable=false)
      */
     private $location;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ProductOfferBid::class, mappedBy="productOffer")
+     */
+    private $productOfferBids;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $hasDelivery;
+
+    public function __construct()
+    {
+        $this->productOfferBids = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -106,6 +123,48 @@ class ProductOffer
     public function setLocation(?Location $location): self
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductOfferBid>
+     */
+    public function getProductOfferBids(): Collection
+    {
+        return $this->productOfferBids;
+    }
+
+    public function addProductOfferBid(ProductOfferBid $productOfferBid): self
+    {
+        if (!$this->productOfferBids->contains($productOfferBid)) {
+            $this->productOfferBids[] = $productOfferBid;
+            $productOfferBid->setProductOffer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductOfferBid(ProductOfferBid $productOfferBid): self
+    {
+        if ($this->productOfferBids->removeElement($productOfferBid)) {
+            // set the owning side to null (unless already changed)
+            if ($productOfferBid->getProductOffer() === $this) {
+                $productOfferBid->setProductOffer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getHasDelivery(): ?bool
+    {
+        return $this->hasDelivery;
+    }
+
+    public function setHasDelivery(?bool $hasDelivery): self
+    {
+        $this->hasDelivery = $hasDelivery;
 
         return $this;
     }

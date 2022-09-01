@@ -70,12 +70,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $productOffers;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ProductOfferBid::class, mappedBy="user")
+     */
+    private $productOfferBids;
+
     public function __construct($email= null,$password = null)
     {
         if ($email != null) $this->setEmail($email);
         if ($password != null) $this->setPassword($password);
         $this->locations = new ArrayCollection();
         $this->productOffers = new ArrayCollection();
+        $this->productOfferBids = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -215,6 +221,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($productOffer->getUser() === $this) {
                 $productOffer->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductOfferBid>
+     */
+    public function getProductOfferBids(): Collection
+    {
+        return $this->productOfferBids;
+    }
+
+    public function addProductOfferBid(ProductOfferBid $productOfferBid): self
+    {
+        if (!$this->productOfferBids->contains($productOfferBid)) {
+            $this->productOfferBids[] = $productOfferBid;
+            $productOfferBid->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductOfferBid(ProductOfferBid $productOfferBid): self
+    {
+        if ($this->productOfferBids->removeElement($productOfferBid)) {
+            // set the owning side to null (unless already changed)
+            if ($productOfferBid->getUser() === $this) {
+                $productOfferBid->setUser(null);
             }
         }
 

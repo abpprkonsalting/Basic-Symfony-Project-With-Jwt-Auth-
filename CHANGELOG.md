@@ -81,7 +81,7 @@ Response:
 
 ### To do for next version:
 
-- Test correctly what had been done up to now (phpunit, unit / integration /application tests where applicable)
+- Test correctly what had been done up to now (unit / integration /application tests with phpunit where each are applicable)
 - Check thoroughly the jwt implementation and how much it helps in securing the site.
 - Add jwt rotation & auto-logout based on the timestamp
 

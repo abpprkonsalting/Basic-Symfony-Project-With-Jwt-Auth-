@@ -42,10 +42,16 @@ class Product
      */
     private $productAttributeValueStrings;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ProductOffer::class, mappedBy="product")
+     */
+    private $productOffers;
+
     public function __construct()
     {
         $this->productAttributeValueInts = new ArrayCollection();
         $this->productAttributeValueStrings = new ArrayCollection();
+        $this->productOffers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -131,6 +137,36 @@ class Product
             // set the owning side to null (unless already changed)
             if ($productAttributeValueString->getEntity() === $this) {
                 $productAttributeValueString->setEntity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductOffer>
+     */
+    public function getProductOffers(): Collection
+    {
+        return $this->productOffers;
+    }
+
+    public function addProductOffer(ProductOffer $productOffer): self
+    {
+        if (!$this->productOffers->contains($productOffer)) {
+            $this->productOffers[] = $productOffer;
+            $productOffer->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductOffer(ProductOffer $productOffer): self
+    {
+        if ($this->productOffers->removeElement($productOffer)) {
+            // set the owning side to null (unless already changed)
+            if ($productOffer->getProduct() === $this) {
+                $productOffer->setProduct(null);
             }
         }
 

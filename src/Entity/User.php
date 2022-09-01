@@ -65,11 +65,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $locations;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ProductOffer::class, mappedBy="user")
+     */
+    private $productOffers;
+
     public function __construct($email= null,$password = null)
     {
         if ($email != null) $this->setEmail($email);
         if ($password != null) $this->setPassword($password);
         $this->locations = new ArrayCollection();
+        $this->productOffers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -181,6 +187,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeLocation(Location $location): self
     {
         $this->locations->removeElement($location);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductOffer>
+     */
+    public function getProductOffers(): Collection
+    {
+        return $this->productOffers;
+    }
+
+    public function addProductOffer(ProductOffer $productOffer): self
+    {
+        if (!$this->productOffers->contains($productOffer)) {
+            $this->productOffers[] = $productOffer;
+            $productOffer->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductOffer(ProductOffer $productOffer): self
+    {
+        if ($this->productOffers->removeElement($productOffer)) {
+            // set the owning side to null (unless already changed)
+            if ($productOffer->getUser() === $this) {
+                $productOffer->setUser(null);
+            }
+        }
 
         return $this;
     }

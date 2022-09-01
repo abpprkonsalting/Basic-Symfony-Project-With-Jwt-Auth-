@@ -49,12 +49,18 @@ class Location
      */
     private $productAttributeValueStrings;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ProductOffer::class, mappedBy="location")
+     */
+    private $productOffers;
+
     public function __construct()
     {
         $this->childrenLocations = new ArrayCollection();
         $this->productAttributeValueInts = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->productAttributeValueStrings = new ArrayCollection();
+        $this->productOffers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -197,6 +203,36 @@ class Location
             // set the owning side to null (unless already changed)
             if ($productAttributeValueString->getLocation() === $this) {
                 $productAttributeValueString->setLocation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductOffer>
+     */
+    public function getProductOffers(): Collection
+    {
+        return $this->productOffers;
+    }
+
+    public function addProductOffer(ProductOffer $productOffer): self
+    {
+        if (!$this->productOffers->contains($productOffer)) {
+            $this->productOffers[] = $productOffer;
+            $productOffer->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductOffer(ProductOffer $productOffer): self
+    {
+        if ($this->productOffers->removeElement($productOffer)) {
+            // set the owning side to null (unless already changed)
+            if ($productOffer->getLocation() === $this) {
+                $productOffer->setLocation(null);
             }
         }
 

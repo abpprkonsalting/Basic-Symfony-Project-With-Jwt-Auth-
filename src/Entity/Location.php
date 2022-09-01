@@ -39,10 +39,16 @@ class Location
      */
     private $productAttributeValueInts;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="locations")
+     */
+    private $users;
+
     public function __construct()
     {
         $this->childrenLocations = new ArrayCollection();
         $this->productAttributeValueInts = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -129,6 +135,33 @@ class Location
             if ($productAttributeValueInt->getLocation() === $this) {
                 $productAttributeValueInt->setLocation(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->addLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeLocation($this);
         }
 
         return $this;

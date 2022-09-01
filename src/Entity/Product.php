@@ -28,7 +28,7 @@ class Product
      * @ORM\ManyToOne(targetEntity=ProductType::class, inversedBy="products")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $producttype;
+    private $productType;
 
     public function getId(): ?int
     {
@@ -47,14 +47,14 @@ class Product
         return $this;
     }
 
-    public function getProducttype(): ?ProductType
+    public function getProductType(): ?ProductType
     {
-        return $this->producttype;
+        return $this->productType;
     }
 
-    public function setProducttype(?ProductType $producttype): self
+    public function setProductType(?ProductType $productType): self
     {
-        $this->producttype = $producttype;
+        $this->productType = $productType;
 
         return $this;
     }

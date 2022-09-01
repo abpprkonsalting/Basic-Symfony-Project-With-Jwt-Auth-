@@ -44,11 +44,17 @@ class Location
      */
     private $users;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ProductAttributeValueString::class, mappedBy="location", orphanRemoval=true)
+     */
+    private $productAttributeValueStrings;
+
     public function __construct()
     {
         $this->childrenLocations = new ArrayCollection();
         $this->productAttributeValueInts = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->productAttributeValueStrings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,6 +168,36 @@ class Location
     {
         if ($this->users->removeElement($user)) {
             $user->removeLocation($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductAttributeValueString>
+     */
+    public function getProductAttributeValueStrings(): Collection
+    {
+        return $this->productAttributeValueStrings;
+    }
+
+    public function addProductAttributeValueString(ProductAttributeValueString $productAttributeValueString): self
+    {
+        if (!$this->productAttributeValueStrings->contains($productAttributeValueString)) {
+            $this->productAttributeValueStrings[] = $productAttributeValueString;
+            $productAttributeValueString->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductAttributeValueString(ProductAttributeValueString $productAttributeValueString): self
+    {
+        if ($this->productAttributeValueStrings->removeElement($productAttributeValueString)) {
+            // set the owning side to null (unless already changed)
+            if ($productAttributeValueString->getLocation() === $this) {
+                $productAttributeValueString->setLocation(null);
+            }
         }
 
         return $this;

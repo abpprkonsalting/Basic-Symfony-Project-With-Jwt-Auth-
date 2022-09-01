@@ -40,9 +40,15 @@ class Attribute
      */
     private $productAttributeValueInts;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ProductAttributeValueString::class, mappedBy="attribute", orphanRemoval=true)
+     */
+    private $productAttributeValueStrings;
+
     public function __construct()
     {
         $this->productAttributeValueInts = new ArrayCollection();
+        $this->productAttributeValueStrings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -110,6 +116,36 @@ class Attribute
             // set the owning side to null (unless already changed)
             if ($productAttributeValueInt->getAttribute() === $this) {
                 $productAttributeValueInt->setAttribute(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductAttributeValueString>
+     */
+    public function getProductAttributeValueStrings(): Collection
+    {
+        return $this->productAttributeValueStrings;
+    }
+
+    public function addProductAttributeValueString(ProductAttributeValueString $productAttributeValueString): self
+    {
+        if (!$this->productAttributeValueStrings->contains($productAttributeValueString)) {
+            $this->productAttributeValueStrings[] = $productAttributeValueString;
+            $productAttributeValueString->setAttribute($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductAttributeValueString(ProductAttributeValueString $productAttributeValueString): self
+    {
+        if ($this->productAttributeValueStrings->removeElement($productAttributeValueString)) {
+            // set the owning side to null (unless already changed)
+            if ($productAttributeValueString->getAttribute() === $this) {
+                $productAttributeValueString->setAttribute(null);
             }
         }
 

@@ -70,6 +70,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $productOfferBids;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserInterchangeLocation::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $userInterchangeLocations;
+
     public function __construct($email= null,$password = null)
     {
         if ($email != null) $this->setEmail($email);
@@ -77,6 +82,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->locations = new ArrayCollection();
         $this->productOffers = new ArrayCollection();
         $this->productOfferBids = new ArrayCollection();
+        $this->userInterchangeLocations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -246,6 +252,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($productOfferBid->getUser() === $this) {
                 $productOfferBid->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserInterchangeLocation>
+     */
+    public function getUserInterchangeLocations(): Collection
+    {
+        return $this->userInterchangeLocations;
+    }
+
+    public function addUserInterchangeLocation(UserInterchangeLocation $userInterchangeLocation): self
+    {
+        if (!$this->userInterchangeLocations->contains($userInterchangeLocation)) {
+            $this->userInterchangeLocations[] = $userInterchangeLocation;
+            $userInterchangeLocation->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserInterchangeLocation(UserInterchangeLocation $userInterchangeLocation): self
+    {
+        if ($this->userInterchangeLocations->removeElement($userInterchangeLocation)) {
+            // set the owning side to null (unless already changed)
+            if ($userInterchangeLocation->getUser() === $this) {
+                $userInterchangeLocation->setUser(null);
             }
         }
 

@@ -49,6 +49,11 @@ class Location
      */
     private $productOffers;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserInterchangeLocation::class, mappedBy="location", orphanRemoval=true)
+     */
+    private $userInterchangeLocations;
+
     public function __construct()
     {
         $this->childrenLocations = new ArrayCollection();
@@ -56,6 +61,7 @@ class Location
         $this->users = new ArrayCollection();
         $this->productAttributeValueStrings = new ArrayCollection();
         $this->productOffers = new ArrayCollection();
+        $this->userInterchangeLocations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -228,6 +234,36 @@ class Location
             // set the owning side to null (unless already changed)
             if ($productOffer->getLocation() === $this) {
                 $productOffer->setLocation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserInterchangeLocation>
+     */
+    public function getUserInterchangeLocations(): Collection
+    {
+        return $this->userInterchangeLocations;
+    }
+
+    public function addUserInterchangeLocation(UserInterchangeLocation $userInterchangeLocation): self
+    {
+        if (!$this->userInterchangeLocations->contains($userInterchangeLocation)) {
+            $this->userInterchangeLocations[] = $userInterchangeLocation;
+            $userInterchangeLocation->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserInterchangeLocation(UserInterchangeLocation $userInterchangeLocation): self
+    {
+        if ($this->userInterchangeLocations->removeElement($userInterchangeLocation)) {
+            // set the owning side to null (unless already changed)
+            if ($userInterchangeLocation->getLocation() === $this) {
+                $userInterchangeLocation->setLocation(null);
             }
         }
 

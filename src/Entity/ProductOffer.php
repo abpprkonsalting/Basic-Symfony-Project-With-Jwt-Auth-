@@ -57,6 +57,11 @@ class ProductOffer
      */
     private $hasDelivery;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $suggestedPrice;
+
     public function __construct()
     {
         $this->productOfferBids = new ArrayCollection();
@@ -165,6 +170,18 @@ class ProductOffer
     public function setHasDelivery(?bool $hasDelivery): self
     {
         $this->hasDelivery = $hasDelivery;
+
+        return $this;
+    }
+
+    public function getSuggestedPrice(): ?int
+    {
+        return $this->suggestedPrice;
+    }
+
+    public function setSuggestedPrice(int $suggestedPrice): self
+    {
+        $this->suggestedPrice = $suggestedPrice;
 
         return $this;
     }

@@ -61,11 +61,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Location::class, inversedBy="users")
-     */
-    private $locations;
-
-    /**
      * @ORM\OneToMany(targetEntity=ProductOffer::class, mappedBy="user")
      */
     private $productOffers;

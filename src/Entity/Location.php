@@ -40,11 +40,6 @@ class Location
     private $productAttributeValueInts;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="locations")
-     */
-    private $users;
-
-    /**
      * @ORM\OneToMany(targetEntity=ProductAttributeValueString::class, mappedBy="location", orphanRemoval=true)
      */
     private $productAttributeValueStrings;

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserInterchangeLocationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,6 +40,22 @@ class UserInterchangeLocation
      * @ORM\Column(type="string", length=255)
      */
     private $number;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserInterchangeLocationValueInt::class, mappedBy="entity", orphanRemoval=true)
+     */
+    private $userInterchangeLocationValueInts;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserInterchangeLocationValueString::class, mappedBy="entity", orphanRemoval=true)
+     */
+    private $userInterchangeLocationValueStrings;
+
+    public function __construct()
+    {
+        $this->userInterchangeLocationValueInts = new ArrayCollection();
+        $this->userInterchangeLocationValueStrings = new ArrayCollection();
+    }
 
     public function getUser(): ?User
     {
@@ -83,6 +101,66 @@ class UserInterchangeLocation
     public function setNumber(string $number): self
     {
         $this->number = $number;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserInterchangeLocationValueInt>
+     */
+    public function getUserInterchangeLocationValueInts(): Collection
+    {
+        return $this->userInterchangeLocationValueInts;
+    }
+
+    public function addUserInterchangeLocationValueInt(UserInterchangeLocationValueInt $userInterchangeLocationValueInt): self
+    {
+        if (!$this->userInterchangeLocationValueInts->contains($userInterchangeLocationValueInt)) {
+            $this->userInterchangeLocationValueInts[] = $userInterchangeLocationValueInt;
+            $userInterchangeLocationValueInt->setEntity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserInterchangeLocationValueInt(UserInterchangeLocationValueInt $userInterchangeLocationValueInt): self
+    {
+        if ($this->userInterchangeLocationValueInts->removeElement($userInterchangeLocationValueInt)) {
+            // set the owning side to null (unless already changed)
+            if ($userInterchangeLocationValueInt->getEntity() === $this) {
+                $userInterchangeLocationValueInt->setEntity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserInterchangeLocationValueString>
+     */
+    public function getUserInterchangeLocationValueStrings(): Collection
+    {
+        return $this->userInterchangeLocationValueStrings;
+    }
+
+    public function addUserInterchangeLocationValueString(UserInterchangeLocationValueString $userInterchangeLocationValueString): self
+    {
+        if (!$this->userInterchangeLocationValueStrings->contains($userInterchangeLocationValueString)) {
+            $this->userInterchangeLocationValueStrings[] = $userInterchangeLocationValueString;
+            $userInterchangeLocationValueString->setEntity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserInterchangeLocationValueString(UserInterchangeLocationValueString $userInterchangeLocationValueString): self
+    {
+        if ($this->userInterchangeLocationValueStrings->removeElement($userInterchangeLocationValueString)) {
+            // set the owning side to null (unless already changed)
+            if ($userInterchangeLocationValueString->getEntity() === $this) {
+                $userInterchangeLocationValueString->setEntity(null);
+            }
+        }
 
         return $this;
     }

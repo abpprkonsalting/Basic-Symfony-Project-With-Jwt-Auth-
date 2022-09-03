@@ -31,7 +31,7 @@ class Attribute
 
     /**
      * @ORM\ManyToOne(targetEntity=ProductType::class, inversedBy="attributes")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $productType;
 
@@ -45,10 +45,22 @@ class Attribute
      */
     private $productAttributeValueStrings;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserInterchangeLocationValueInt::class, mappedBy="attribute", orphanRemoval=true)
+     */
+    private $userInterchangeLocationValueInts;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserInterchangeLocationValueString::class, mappedBy="attribute", orphanRemoval=true)
+     */
+    private $userInterchangeLocationValueStrings;
+
     public function __construct()
     {
         $this->productAttributeValueInts = new ArrayCollection();
         $this->productAttributeValueStrings = new ArrayCollection();
+        $this->userInterchangeLocationValueInts = new ArrayCollection();
+        $this->userInterchangeLocationValueStrings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,6 +158,66 @@ class Attribute
             // set the owning side to null (unless already changed)
             if ($productAttributeValueString->getAttribute() === $this) {
                 $productAttributeValueString->setAttribute(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserInterchangeLocationValueInt>
+     */
+    public function getUserInterchangeLocationValueInts(): Collection
+    {
+        return $this->userInterchangeLocationValueInts;
+    }
+
+    public function addUserInterchangeLocationValueInt(UserInterchangeLocationValueInt $userInterchangeLocationValueInt): self
+    {
+        if (!$this->userInterchangeLocationValueInts->contains($userInterchangeLocationValueInt)) {
+            $this->userInterchangeLocationValueInts[] = $userInterchangeLocationValueInt;
+            $userInterchangeLocationValueInt->setAttribute($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserInterchangeLocationValueInt(UserInterchangeLocationValueInt $userInterchangeLocationValueInt): self
+    {
+        if ($this->userInterchangeLocationValueInts->removeElement($userInterchangeLocationValueInt)) {
+            // set the owning side to null (unless already changed)
+            if ($userInterchangeLocationValueInt->getAttribute() === $this) {
+                $userInterchangeLocationValueInt->setAttribute(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserInterchangeLocationValueString>
+     */
+    public function getUserInterchangeLocationValueStrings(): Collection
+    {
+        return $this->userInterchangeLocationValueStrings;
+    }
+
+    public function addUserInterchangeLocationValueString(UserInterchangeLocationValueString $userInterchangeLocationValueString): self
+    {
+        if (!$this->userInterchangeLocationValueStrings->contains($userInterchangeLocationValueString)) {
+            $this->userInterchangeLocationValueStrings[] = $userInterchangeLocationValueString;
+            $userInterchangeLocationValueString->setAttribute($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserInterchangeLocationValueString(UserInterchangeLocationValueString $userInterchangeLocationValueString): self
+    {
+        if ($this->userInterchangeLocationValueStrings->removeElement($userInterchangeLocationValueString)) {
+            // set the owning side to null (unless already changed)
+            if ($userInterchangeLocationValueString->getAttribute() === $this) {
+                $userInterchangeLocationValueString->setAttribute(null);
             }
         }
 
